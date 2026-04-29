@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+dataset/
+outputs/
+.venv/
+env/
+.vscode/
+.idea/
+*.mp4
+*.avi
+*.pth
