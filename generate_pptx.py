@@ -25,46 +25,82 @@ def build_presentation(output_path):
     GREEN = RGBColor(22, 163, 74)        # Green Accent
     AMBER = RGBColor(217, 119, 6)        # Amber Accent
 
-    def add_header(slide, title_text, category="DEPARTMENT OF ARTIFICIAL INTELLIGENCE & MACHINE LEARNING (AI & ML)"):
-        # Top banner category
-        cat_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.35), Inches(11.73), Inches(0.35))
-        tf_cat = cat_box.text_frame
-        p_cat = tf_cat.paragraphs[0]
-        p_cat.text = category.upper()
-        p_cat.font.size = Pt(10)
-        p_cat.font.bold = True
-        p_cat.font.color.rgb = BLUE
-        p_cat.font.name = "Calibri"
+    def add_bg(slide):
+        """Add light-blue gradient-like background to match the uploaded slide style."""
+        bg = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(7.5))
+        bg.fill.solid()
+        bg.fill.fore_color.rgb = RGBColor(220, 232, 248)  # light periwinkle blue
+        bg.line.fill.background()
 
-        # Main slide title
-        title_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.65), Inches(11.73), Inches(0.7))
-        tf_title = title_box.text_frame
-        p_title = tf_title.paragraphs[0]
-        p_title.text = title_text
-        p_title.font.size = Pt(22)
-        p_title.font.bold = True
-        p_title.font.color.rgb = NAVY
-        p_title.font.name = "Calibri"
+    def add_header(slide, title_text):
+        """Consistent header for all non-title slides matching GNDEC branding."""
+        # Light blue background
+        add_bg(slide)
 
-        # Clean Divider Line
-        line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.35), Inches(11.73), Inches(0.02))
+        # Top white banner
+        banner = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(1.25))
+        banner.fill.solid()
+        banner.fill.fore_color.rgb = WHITE
+        banner.line.fill.background()
+
+        # College name (line 1)
+        college_box = slide.shapes.add_textbox(Inches(0.4), Inches(0.05), Inches(12.53), Inches(0.55))
+        tf_c = college_box.text_frame
+        p_c = tf_c.paragraphs[0]
+        p_c.text = "GURU NANAK DEV ENGINEERING COLLEGE, BIDAR"
+        p_c.font.size = Pt(17)
+        p_c.font.bold = True
+        p_c.font.color.rgb = NAVY
+        p_c.font.name = "Calibri"
+        p_c.alignment = PP_ALIGN.CENTER
+
+        # Department name (line 2)
+        dept_box = slide.shapes.add_textbox(Inches(0.4), Inches(0.55), Inches(12.53), Inches(0.42))
+        tf_d = dept_box.text_frame
+        p_d = tf_d.paragraphs[0]
+        p_d.text = "DEPARTMENT OF AI & ML"
+        p_d.font.size = Pt(13)
+        p_d.font.bold = True
+        p_d.font.color.rgb = BLUE
+        p_d.font.name = "Calibri"
+        p_d.alignment = PP_ALIGN.CENTER
+
+        # Divider line below banner
+        line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(1.25), Inches(13.333), Inches(0.03))
         line.fill.solid()
         line.fill.fore_color.rgb = BLUE
-        line.line.color.rgb = BLUE
+        line.line.fill.background()
 
-        # Subtle Footer
-        foot_line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(7.0), Inches(11.73), Inches(0.015))
-        foot_line.fill.solid()
-        foot_line.fill.fore_color.rgb = BORDER
-        foot_line.line.color.rgb = BORDER
+        # Slide section title (dark blue bar)
+        sec_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.5), Inches(1.35), Inches(12.33), Inches(0.52))
+        sec_bar.fill.solid()
+        sec_bar.fill.fore_color.rgb = NAVY
+        sec_bar.line.fill.background()
 
-        foot_box = slide.shapes.add_textbox(Inches(0.8), Inches(7.02), Inches(11.73), Inches(0.35))
+        sec_title_box = slide.shapes.add_textbox(Inches(0.6), Inches(1.37), Inches(12.13), Inches(0.46))
+        tf_st = sec_title_box.text_frame
+        p_st = tf_st.paragraphs[0]
+        p_st.text = title_text
+        p_st.font.size = Pt(18)
+        p_st.font.bold = True
+        p_st.font.color.rgb = WHITE
+        p_st.font.name = "Calibri"
+        p_st.alignment = PP_ALIGN.CENTER
+
+        # Footer bar
+        foot_bar = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(7.2), Inches(13.333), Inches(0.3))
+        foot_bar.fill.solid()
+        foot_bar.fill.fore_color.rgb = NAVY
+        foot_bar.line.fill.background()
+
+        foot_box = slide.shapes.add_textbox(Inches(0.4), Inches(7.22), Inches(12.53), Inches(0.28))
         tf_foot = foot_box.text_frame
         p_foot = tf_foot.paragraphs[0]
-        p_foot.text = "Video Activity Recognition with 3D CNN & Grad-CAM  |  Dept of AI & ML"
-        p_foot.font.size = Pt(9.5)
-        p_foot.font.color.rgb = MUTED
+        p_foot.text = "Video Activity Recognition with 3D CNN & Grad-CAM  |  AIML GNDEC"
+        p_foot.font.size = Pt(9)
+        p_foot.font.color.rgb = WHITE
         p_foot.font.name = "Calibri"
+        p_foot.alignment = PP_ALIGN.CENTER
 
     def add_card(slide, left, top, width, height, bg_color=CARD_BG, border_color=BORDER):
         shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
@@ -75,75 +111,168 @@ def build_presentation(output_path):
         return shape
 
     # =========================================================================
-    # SLIDE 1: Simple Title Slide
+    # SLIDE 1: Title Slide — matching GNDEC uploaded design
     # =========================================================================
     s1 = prs.slides.add_slide(blank_layout)
-    add_card(s1, Inches(0.8), Inches(0.8), Inches(11.73), Inches(5.9), bg_color=WHITE, border_color=BLUE)
-    
-    # Department Tag
-    badge = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(1.2), Inches(1.2), Inches(6.5), Inches(0.42))
-    badge.fill.solid()
-    badge.fill.fore_color.rgb = LIGHT_BLUE
-    badge.line.color.rgb = BLUE
-    tf_b = badge.text_frame
-    p_b = tf_b.paragraphs[0]
-    p_b.text = "DEPARTMENT OF ARTIFICIAL INTELLIGENCE & MACHINE LEARNING"
-    p_b.font.size = Pt(11)
-    p_b.font.bold = True
-    p_b.font.color.rgb = BLUE
-    p_b.font.name = "Calibri"
-    p_b.alignment = PP_ALIGN.CENTER
 
-    tb1 = s1.shapes.add_textbox(Inches(1.2), Inches(1.85), Inches(10.9), Inches(2.2))
-    tf1 = tb1.text_frame
-    tf1.word_wrap = True
-    
-    p1 = tf1.paragraphs[0]
-    p1.text = "Video Activity Recognition"
-    p1.font.size = Pt(36)
-    p1.font.bold = True
-    p1.font.color.rgb = NAVY
-    p1.font.name = "Calibri"
+    # Light blue gradient background
+    add_bg(s1)
 
-    p2 = tf1.add_paragraph()
-    p2.text = "Using 3D Convolutional Neural Networks (3D-CNN) & Grad-CAM Explainable AI"
-    p2.font.size = Pt(20)
-    p2.font.bold = True
-    p2.font.color.rgb = BLUE
-    p2.font.name = "Calibri"
+    # Top white header panel
+    top_panel = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(1.4))
+    top_panel.fill.solid()
+    top_panel.fill.fore_color.rgb = WHITE
+    top_panel.line.fill.background()
 
-    p3 = tf1.add_paragraph()
-    p3.text = "Spatiotemporal Action Classification with Real-Time Attention Heatmaps & Live Camera Predictor"
-    p3.font.size = Pt(14)
-    p3.font.color.rgb = MUTED
-    p3.font.name = "Calibri"
+    # Left circle placeholder (college logo area — grey circle)
+    logo_circle = s1.shapes.add_shape(MSO_SHAPE.OVAL, Inches(0.15), Inches(0.08), Inches(1.2), Inches(1.2))
+    logo_circle.fill.solid()
+    logo_circle.fill.fore_color.rgb = RGBColor(200, 205, 215)
+    logo_circle.line.color.rgb = RGBColor(140, 150, 160)
+    logo_tf = logo_circle.text_frame
+    logo_p = logo_tf.paragraphs[0]
+    logo_p.text = "GNDEC\nLOGO"
+    logo_p.font.size = Pt(8)
+    logo_p.font.bold = True
+    logo_p.font.color.rgb = NAVY
+    logo_p.font.name = "Calibri"
+    logo_p.alignment = PP_ALIGN.CENTER
 
-    # Quick Highlights Box
-    highlights = [
-        ("Architecture", "3D-CNN (Conv3D)"),
-        ("Explainability", "3D Grad-CAM (XAI)"),
-        ("Framework", "PyTorch 2.1 & OpenCV"),
-        ("Live Interface", "30 FPS Real-Time Predictor")
-    ]
-    for i, (head, val) in enumerate(highlights):
-        x = Inches(1.2 + i * 2.75)
-        add_card(s1, x, Inches(4.35), Inches(2.6), Inches(1.5), bg_color=LIGHT_BLUE, border_color=BLUE)
-        tb_m = s1.shapes.add_textbox(x + Inches(0.1), Inches(4.45), Inches(2.4), Inches(1.3))
-        tf_m = tb_m.text_frame
-        tf_m.word_wrap = True
-        pm1 = tf_m.paragraphs[0]
-        pm1.text = head.upper()
-        pm1.font.size = Pt(10)
-        pm1.font.bold = True
-        pm1.font.color.rgb = BLUE
-        pm1.font.name = "Calibri"
-        
-        pm2 = tf_m.add_paragraph()
-        pm2.text = val
-        pm2.font.size = Pt(12)
-        pm2.font.bold = True
-        pm2.font.color.rgb = DARK_TEXT
-        pm2.font.name = "Calibri"
+    # Right NAAC A+ badge placeholder (gold rounded rect)
+    naac_badge = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(11.95), Inches(0.1), Inches(1.2), Inches(1.2))
+    naac_badge.fill.solid()
+    naac_badge.fill.fore_color.rgb = RGBColor(218, 165, 32)
+    naac_badge.line.color.rgb = RGBColor(180, 130, 10)
+    naac_tf = naac_badge.text_frame
+    naac_p = naac_tf.paragraphs[0]
+    naac_p.text = "NAAC\nA+"
+    naac_p.font.size = Pt(11)
+    naac_p.font.bold = True
+    naac_p.font.color.rgb = WHITE
+    naac_p.font.name = "Calibri"
+    naac_p.alignment = PP_ALIGN.CENTER
+
+    # College name
+    col_box = s1.shapes.add_textbox(Inches(1.5), Inches(0.08), Inches(10.3), Inches(0.62))
+    tf_col = col_box.text_frame
+    p_col = tf_col.paragraphs[0]
+    p_col.text = "GURU NANAK DEV ENGINEERING COLLEGE, BIDAR"
+    p_col.font.size = Pt(24)
+    p_col.font.bold = True
+    p_col.font.color.rgb = NAVY
+    p_col.font.name = "Calibri"
+    p_col.alignment = PP_ALIGN.CENTER
+
+    # Department
+    dept_box = s1.shapes.add_textbox(Inches(1.5), Inches(0.68), Inches(10.3), Inches(0.55))
+    tf_dept = dept_box.text_frame
+    p_dept = tf_dept.paragraphs[0]
+    p_dept.text = "DEPARTMENT OF AI & ML"
+    p_dept.font.size = Pt(20)
+    p_dept.font.bold = True
+    p_dept.font.color.rgb = NAVY
+    p_dept.font.name = "Calibri"
+    p_dept.alignment = PP_ALIGN.CENTER
+
+    # Thin divider line
+    div1 = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.5), Inches(1.42), Inches(12.33), Inches(0.025))
+    div1.fill.solid()
+    div1.fill.fore_color.rgb = RGBColor(180, 195, 215)
+    div1.line.fill.background()
+
+    # "Major Project" label
+    major_box = s1.shapes.add_textbox(Inches(2.0), Inches(1.58), Inches(9.33), Inches(0.45))
+    tf_major = major_box.text_frame
+    p_major = tf_major.paragraphs[0]
+    p_major.text = "Major Project"
+    p_major.font.size = Pt(16)
+    p_major.font.bold = True
+    p_major.font.color.rgb = DARK_TEXT
+    p_major.font.name = "Calibri"
+    p_major.alignment = PP_ALIGN.CENTER
+
+    # Project title
+    proj_box = s1.shapes.add_textbox(Inches(1.2), Inches(2.1), Inches(10.93), Inches(1.4))
+    tf_proj = proj_box.text_frame
+    tf_proj.word_wrap = True
+    p_proj = tf_proj.paragraphs[0]
+    p_proj.text = "Spatiotemporal Explainable Human Activity Recognition using"
+    p_proj.font.size = Pt(22)
+    p_proj.font.bold = True
+    p_proj.font.color.rgb = NAVY
+    p_proj.font.name = "Calibri"
+    p_proj.alignment = PP_ALIGN.CENTER
+
+    p_proj2 = tf_proj.add_paragraph()
+    p_proj2.text = "3D Convolutional Neural Networks and Grad-CAM"
+    p_proj2.font.size = Pt(22)
+    p_proj2.font.bold = True
+    p_proj2.font.color.rgb = NAVY
+    p_proj2.font.name = "Calibri"
+    p_proj2.alignment = PP_ALIGN.CENTER
+
+    # Thin divider
+    div2 = s1.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.5), Inches(3.65), Inches(12.33), Inches(0.025))
+    div2.fill.solid()
+    div2.fill.fore_color.rgb = RGBColor(180, 195, 215)
+    div2.line.fill.background()
+
+    # Bottom info area — two columns (Project Guide | Team Members)
+    # Left: Project Guide
+    guide_box = s1.shapes.add_textbox(Inches(0.8), Inches(3.85), Inches(5.0), Inches(2.8))
+    tf_guide = guide_box.text_frame
+    tf_guide.word_wrap = True
+
+    pg1 = tf_guide.paragraphs[0]
+    pg1.text = "Project Guide"
+    pg1.font.size = Pt(15)
+    pg1.font.bold = False
+    pg1.font.color.rgb = DARK_TEXT
+    pg1.font.name = "Calibri"
+
+    pg2 = tf_guide.add_paragraph()
+    pg2.text = ""
+    pg2.font.size = Pt(8)
+
+    pg3 = tf_guide.add_paragraph()
+    pg3.text = "Prof. Rony Preetam Prakash"
+    pg3.font.size = Pt(15)
+    pg3.font.bold = True
+    pg3.font.color.rgb = NAVY
+    pg3.font.name = "Calibri"
+
+    pg4 = tf_guide.add_paragraph()
+    pg4.text = ""
+    pg4.font.size = Pt(8)
+
+    pg5 = tf_guide.add_paragraph()
+    pg5.text = "AIML GNDEC"
+    pg5.font.size = Pt(14)
+    pg5.font.bold = False
+    pg5.font.color.rgb = DARK_TEXT
+    pg5.font.name = "Calibri"
+
+    # Right: Team Members
+    team_box = s1.shapes.add_textbox(Inches(7.5), Inches(3.85), Inches(5.0), Inches(2.8))
+    tf_team = team_box.text_frame
+    tf_team.word_wrap = True
+
+    pt1 = tf_team.paragraphs[0]
+    pt1.text = "Team Members"
+    pt1.font.size = Pt(15)
+    pt1.font.bold = False
+    pt1.font.color.rgb = DARK_TEXT
+    pt1.font.name = "Calibri"
+    pt1.alignment = PP_ALIGN.RIGHT
+
+    for member in ["Nitin Pandre", "Sachin Tamballe", "Vinayak Budnoor", "Prashanth Levadi"]:
+        pm = tf_team.add_paragraph()
+        pm.text = member
+        pm.font.size = Pt(14)
+        pm.font.bold = True
+        pm.font.color.rgb = NAVY
+        pm.font.name = "Calibri"
+        pm.alignment = PP_ALIGN.RIGHT
 
     # =========================================================================
     # SLIDE 2: Introduction & Project Overview
