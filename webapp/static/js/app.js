@@ -66,6 +66,12 @@ function stopCamera() {
   document.getElementById('confBar').style.width = '0%';
   document.getElementById('overlayLabel').textContent = '—';
   document.getElementById('overlayConf').textContent = '';
+
+  // Clear heatmap
+  const img = document.getElementById('heatmapImg');
+  const placeholder = document.getElementById('heatmapPlaceholder');
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (placeholder) placeholder.style.display = 'flex';
 }
 
 function captureFrame() {
@@ -108,10 +114,21 @@ async function sendFrames(frames) {
     lastPredTime = now;
 
     updatePredUI(data.label, data.confidence, fps);
+    if (data.heatmap) updateHeatmap(data.heatmap);
   } catch (e) {
     console.error('Prediction error:', e);
   } finally {
     isPredicting = false;
+  }
+}
+
+function updateHeatmap(dataUrl) {
+  const img = document.getElementById('heatmapImg');
+  const placeholder = document.getElementById('heatmapPlaceholder');
+  if (img) {
+    img.src = dataUrl;
+    img.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
   }
 }
 
