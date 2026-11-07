@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Activity Recognition | AIML GNDEC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="site-header">
+  <div class="header-top">
+    <div class="logo-area">
+      <div class="college-logo">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2"/>
+          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+                fill="white" font-size="11" font-weight="bold" font-family="Inter">GNDEC</text>
+        </svg>
+      </div>
+      <div class="college-info">
+        <h1 class="college-name">GURU NANAK DEV ENGINEERING COLLEGE, BIDAR</h1>
+        <p class="dept-name">Department of Artificial Intelligence &amp; Machine Learning</p>
+      </div>
+    </div>
+    <div class="naac-badge">
+      <div class="naac-inner">
+        <span class="naac-grade">A+</span>
+        <span class="naac-label">NAAC</span>
+      </div>
+    </div>
+  </div>
+  <div class="project-banner">
+    <span class="banner-tag">Major Project</span>
+    <h2 class="project-title">
+      Spatiotemporal Explainable Human Activity Recognition<br/>
+      <span class="project-sub">Using 3D CNN &amp; Grad-CAM</span>
+    </h2>
+  </div>
+</header>
+
+<!-- ══════════════ NAV TABS ══════════════ -->
+<nav class="tabs">
+  <button class="tab-btn active" onclick="showTab('live')">📹 Live Camera</button>
+  <button class="tab-btn" onclick="showTab('upload')">📁 Upload Video</button>
+  <button class="tab-btn" onclick="showTab('about')">ℹ️ About Project</button>
+</nav>
+
+<!-- ══════════════ TAB: LIVE CAMERA ══════════════ -->
+<section id="tab-live" class="tab-content active">
+  <div class="container">
+    <div class="card info-card">
+      <h3>🔴 Real-Time Live Activity Predictor</h3>
+      <p>Your browser will request camera access. The system captures frames every 300ms and
+         sends them to the AI model for activity classification.</p>
+      <div class="actions">
+        <button id="startBtn" class="btn btn-primary" onclick="startCamera()">▶ Start Camera</button>
+        <button id="stopBtn"  class="btn btn-danger"  onclick="stopCamera()" style="display:none">⏹ Stop</button>
+      </div>
+    </div>
+
+    <div class="live-grid">
+      <!-- Camera feed -->
+      <div class="card video-card">
+        <div class="card-header">🎥 Live Camera Feed</div>
+        <div class="video-wrapper">
+          <video id="videoEl" autoplay muted playsinline></video>
+          <canvas id="canvasEl" style="display:none"></canvas>
+          <div class="video-overlay" id="liveOverlay">
+            <div class="overlay-label" id="overlayLabel">—</div>
+            <div class="overlay-conf" id="overlayConf"></div>
+          </div>
+          <div id="cameraPlaceholder" class="video-placeholder">
+            <div class="placeholder-icon">📷</div>
+            <p>Camera not started</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results panel -->
+      <div class="results-panel">
+        <div class="card metric-card">
+          <div class="metric-label">Predicted Activity</div>
+          <div class="metric-value" id="predLabel">—</div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">Confidence</div>
+          <div class="metric-value" id="predConf">—</div>
+          <div class="conf-bar-wrap"><div class="conf-bar" id="confBar"></div></div>
+        </div>
+        <div class="card metric-card">
+          <div class="metric-label">FPS</div>
+          <div class="metric-value" id="predFps">—</div>
+        </div>
+        <div class="card activity-legend">
+          <div class="legend-title">Activity Classes</div>
+          <div class="legend-item"><span class="dot dot-idle"></span> Sitting / Idle</div>
+          <div class="legend-item"><span class="dot dot-walk"></span> Walking</div>
+          <div class="legend-item"><span class="dot dot-run"></span> Running</div>
+          <div class="legend-item"><span class="dot dot-jump"></span> Jumping</div>
+        </div>
+        <div class="card log-card">
+          <div class="legend-title">📋 Prediction Log</div>
+          <div id="predLog" class="pred-log"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TAB: UPLOAD VIDEO ══════════════ -->
+<section id="tab-upload" class="tab-content">
+  <div class="container">
+    <div class="card">
+      <h3>📁 Upload Video for Analysis</h3>
+      <p>Upload an MP4, AVI or MOV video. The model will sample frames and predict the dominant activity.</p>
+
+      <div class="upload-zone" id="dropZone"
+           ondragover="event.preventDefault();this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handleDrop(event)">
+        <div class="upload-icon">🎬</div>
+        <p>Drag &amp; drop a video here, or</p>
+        <label class="btn btn-outline" for="fileInput">Browse File</label>
+        <input type="file" id="fileInput" accept=".mp4,.avi,.mov,.mkv" style="display:none" onchange="handleFile(this.files[0])"/>
+        <p class="upload-hint">Supported: MP4, AVI, MOV, MKV • Max 100 MB</p>
+      </div>
+
+      <div id="uploadStatus" style="display:none" class="upload-status">
+        <div class="spinner"></div>
+        <span id="uploadStatusText">Uploading &amp; analyzing…</span>
+      </div>
+    </div>
+
+    <div id="uploadResult" class="card result-card" style="display:none">
+      <h3>📊 Analysis Result</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="result-key">Predicted Activity</div>
+          <div class="result-val" id="uploadLabel">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-key">Confidence</div>
+          <div class="result-val" id="uploadConf">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-key">Frames Analyzed</div>
+          <div class="result-val" id="uploadFrames">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TAB: ABOUT ══════════════ -->
+<section id="tab-about" class="tab-content">
+  <div class="container">
+    <div class="card about-card">
+      <h3>🧠 About This Project</h3>
+      <p>
+        This system performs <strong>Spatiotemporal Human Activity Recognition</strong> using
+        <strong>3D Convolutional Neural Networks (3D-CNN)</strong> and
+        <strong>Grad-CAM Explainable AI</strong> to classify human actions from video streams in real time.
+      </p>
+      <div class="about-grid">
+        <div class="about-item">
+          <div class="about-icon">🏗️</div>
+          <div class="about-key">Architecture</div>
+          <div class="about-val">3D-CNN (Conv3D layers)</div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">🔍</div>
+          <div class="about-key">Explainability</div>
+          <div class="about-val">Grad-CAM heatmaps</div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">⚙️</div>
+          <div class="about-key">Framework</div>
+          <div class="about-val">PyTorch 2.1 + OpenCV</div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">🌐</div>
+          <div class="about-key">Web Backend</div>
+          <div class="about-val">Flask (Python)</div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">📹</div>
+          <div class="about-key">Input</div>
+          <div class="about-val">16-frame temporal window</div>
+        </div>
+        <div class="about-item">
+          <div class="about-icon">🏃</div>
+          <div class="about-key">Classes</div>
+          <div class="about-val">Sitting · Walking · Running · Jumping</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card team-card">
+      <h3>👥 Team</h3>
+      <div class="team-grid">
+        <div class="team-member"><div class="avatar">NP</div><div class="member-name">Nitin Pandre</div></div>
+        <div class="team-member"><div class="avatar">ST</div><div class="member-name">Sachin Tamballe</div></div>
+        <div class="team-member"><div class="avatar">VB</div><div class="member-name">Vinayak Budnoor</div></div>
+        <div class="team-member"><div class="avatar">PL</div><div class="member-name">Prashanth Levadi</div></div>
+      </div>
+      <div class="guide-row">
+        <strong>Project Guide:</strong> Prof. Rony Preetam Prakash &nbsp;|&nbsp; AIML GNDEC
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="site-footer">
+  Department of AI &amp; ML &nbsp;|&nbsp; Guru Nanak Dev Engineering College, Bidar &nbsp;|&nbsp;
+  Video Activity Recognition with 3D CNN &amp; Grad-CAM
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
